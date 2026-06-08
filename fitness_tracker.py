@@ -9,17 +9,6 @@ c.execute("PRAGMA foreign_keys = ON;")
 
 tables_to_clean = ['clients', 'trainers']
 
-
-trainers = [('Josh', 'Cardio'),
-            ('Jack', 'Cross'),
-            ('Jared', 'Powerlifting')]
-clients = [('Josh', 58.90, 3),
-           ('Jacob', 63.50, 3),
-           ('Dwayne', 70.50, 3),
-           ('Alex', 98.00, 2),
-           ('Jon', 101.20, 1),
-           ('Sean', 98.30, 1)]
-
 def create_table(cursor, table_name, columns_sql):
     cursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} ({columns_sql});")
 
@@ -27,11 +16,20 @@ def delete_tables(cursor, table_names):
     for table_name in table_names:
         cursor.execute(f"DROP TABLE IF EXISTS {table_name}")
 
-def insert_trainers(cursor, trainers):
+def insert_trainers(cursor):
+    trainers = [('Josh', 'Cardio'),
+            ('Jack', 'Cross'),
+            ('Jared', 'Powerlifting')]
     query = "INSERT INTO trainers (name, specialty) VALUES (?, ?)"
     cursor.executemany(query, trainers)
 
-def insert_clients(cursor, clients):
+def insert_clients(cursor):
+    clients = [('Josh', 58.90, 3),
+           ('Jacob', 63.50, 3),
+           ('Dwayne', 70.50, 3),
+           ('Alex', 98.00, 2),
+           ('Jon', 101.20, 1),
+           ('Sean', 98.30, 1)]
     query = "INSERT INTO clients (name, weight, trainer_id) VALUES (?, ?, ?)"
     cursor.executemany(query, clients)
 
@@ -51,8 +49,8 @@ delete_tables(c, tables_to_clean)
 create_table(c, "trainers", "id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, specialty TEXT")
 create_table(c, "clients", "id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, weight REAL, trainer_id INTEGER, FOREIGN KEY (trainer_id) REFERENCES trainers(id)")
 
-insert_trainers(c, trainers)
-insert_clients(c, clients)
+insert_trainers(c)
+insert_clients(c)
 
 show_clients_with_trainers(c)
 
